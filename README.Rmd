@@ -6,6 +6,7 @@ output:
   github_document:
     toc: true
     toc_depth: 4
+
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +24,9 @@ WebAdMIT is  admissions management software available from [Liaison Internationa
 
 
 
+
 ### WebAdMIT
+
 
 WebAdMIT's primary function is a workflow tool for the processing of applicatioins. This base funcitonality has been expanded upon to include the export of application data for use in analysis and for integration with Student Information Systems (SIS). While there is an API available for programatic interatiction with the database, this documentation will only address manual exports.
 
@@ -153,3 +156,27 @@ The fields in these categories should each appear once per applicant. There shou
 
 ## webadmitr
 
+=======
+
+
+![](https://github.com/jstrin/webadmitr/images/em_1.JPG, "Screenshot of the Export Manager.")
+
+
+### Export Manager
+
+
+
+## Useage
+
+### Designation/Application Level Data
+
+
+
+### Applicant Level Data
+
+
+### Combined Application and Applicant Level Data
+
+
+### Future Development
+>>>>>>> d2b1da66b7ee86c21c1407bc5dc060fcf6597ad0

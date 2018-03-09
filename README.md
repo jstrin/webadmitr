@@ -11,8 +11,16 @@ March 9, 2018
         -   [Recent Files](#recent-files)
 -   [Data Useage](#data-useage)
     -   [Designation/Application Level Data](#designationapplication-level-data)
+    -   [Applicant Level Data with repetion](#applicant-level-data-with-repetion)
+        -   [Choices when dealing with applicant level data with repetition](#choices-when-dealing-with-applicant-level-data-with-repetition)
+    -   [Applicant Level Data without Repetion](#applicant-level-data-without-repetion)
+-   [webadmitr](#webadmitr)
+    -   [Export Manager](#export-manager-1)
+-   [Useage](#useage)
+    -   [Designation/Application Level Data](#designationapplication-level-data-1)
     -   [Applicant Level Data](#applicant-level-data)
     -   [Combined Application and Applicant Level Data](#combined-application-and-applicant-level-data)
+    -   [Future Development](#future-development)
 
 Background
 ----------
@@ -120,6 +128,8 @@ When creating a new list, there four options presented:
 
 ![alt text](https://github.com/jstrin/webadmitr/raw/master/images/em_1.JPG "Screenshot of the Export Manager")
 
+##### Export Settings
+
 ##### Cautionary Notes
 
 When a list is used to export data, the lists filters at the **applicant level**. This means that any information associated with an applicant will appear regardless of the list used. For example, if an applicant applied to a program two years in a row, and the list filters to only one of those years, **data related to both years will appear in the export.** For that reason, I recommend including all fields used in the list in the export as well.
@@ -129,28 +139,125 @@ When a list is used to export data, the lists filters at the **applicant level**
 Data Useage
 -----------
 
-When the data is exported from WebAdMIT, any of the fields that have multiple values are exported. We can classify these broadly into two categories: Applicant Level and Designation Level.
+When the data is exported from WebAdMIT, any of the fields that have multiple values are exported. We can classify these broadly into three categories of fields (variables): Applicant Level without Repetition, Applicant Level with Reptition and Designation Level.
 
-| Applicant Level Field Categories | Designation Level Field Categories |
-|----------------------------------|------------------------------------|
-| Additional Questiosn             | Applicant Gateway Activities       |
-| Applicant                        | CAS Information                    |
-| Applicant Ethnicities            | Designation                        |
-| All test scores fields           |                                    |
-| Background                       |                                    |
-| College(s) Attended              |                                    |
-| Current Mailing Address          |                                    |
-| GPAs by School                   |                                    |
-| GPAs by Transcript               |                                    |
-| Languages                        |                                    |
-| Permanent Mailing Address        |                                    |
-| Personal                         |                                    |
-| Preferrred Mailing Address       |                                    |
+<table>
+<colgroup>
+<col width="29%" />
+<col width="38%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Applicant Level Without Repetion</th>
+<th>Applicant Level With Repetion</th>
+<th>Designation Level</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Additional Questiosn</td>
+<td>All test score fields</td>
+<td>Applicant Gateway Activities</td>
+</tr>
+<tr class="even">
+<td>Applicant</td>
+<td>College(s) Attended</td>
+<td>CAS Information</td>
+</tr>
+<tr class="odd">
+<td>Applicant Ethnicities</td>
+<td>GPAs by School</td>
+<td>Designation</td>
+</tr>
+<tr class="even">
+<td>Background</td>
+<td>GPAs by Transcript</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Current Mailing Address</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Languages</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Permanent Mailing Address</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Personal</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Preferrred Mailing Address</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+Fields in teh the second two categories, Applicant Level With Repetion and Designation Level will be repeated depending on the population exported (see: "'Many' fields" in the Export Settings section). These fields will be repeated and the column headings appended with "\_n", where "n" is the number of the repetition. The numbering scheme begins with 0 and will go up to a maximum of 9 (10 possible repetitions). \*\*These numbers are not related to any primacy or order; the variable labeled "\_0"" should not take precedence over the variable labeled "\_1" when selecting which values to use.\*\*
 
 ### Designation/Application Level Data
 
-E
+For any data field belonging to the Designastion Level Field Categories above, every field will be repeated for each designation created by the applicant. In practice, this means that a single variable (e.g., ag\_extend\_offer\_completed\_date) will be repeated once for every designation created (e.g., ag\_extend\_offer\_completed\_date\_0, ag\_extend\_offer\_completed\_date\_1, ag\_extend\_offer\_completed\_date\_2. In essence, a table is being flattened from one applicant-designation per row to one applicant per row. Each of variable in these three categories should have the same number of entries.
+
+### Applicant Level Data with repetion
+
+Similarly for any data field belonging to the Applicant Level Data with Repetition Field Categories above, every field will be repeated for each entry within each category created by the applicant. In practice, this means that a single variable (e.g., gre\_official\_written\_percentile) will be repeated once for every entry provided by the applicant (or test score provider). If an applicant took the GRE five times, then they would have values represented in five columns. In essence, a table is being flattened from one applicant-entry per row to one applicant per row.
+
+#### Choices when dealing with applicant level data with repetition
+
+Each category needs to be dealt with seperately. For example, you may have 10 columns for submitted GRE scores and only two columns for submitted DAT scores. To combine these different categories effectively, the data must be normalized and transformed so that there is one column per field and one row per applicant.
+
+To accomplish this, I recommend taking each set of fields and choosing the value, per applicant, that makes the most sense for your analysis. For example, if you wanted to look at he GRE percentiles and acceptance rate by program, you would first need to take the GRE score fields and choose the maximum GRE percentile (or average, or median, or whatever) for each applicant. Here is some sample R code for making the above transformaiton:
+
+    library(dplyr)
+    library(tidyr)
+    library(stringr)
+
+    dfGRE <- read.csv( "webadmit_gre_export.csv", stringsAsFactors = FALSE )
+
+    dfGRE_tidy_written <- dfGRE %>%
+        select (student_id, starts_with("gre_official_written_percentile" ),
+                  starts_with( "gre_official_quantitative_percentile" ), 
+                  starts_with( "gre_official_verbal_percentile" )) %>%
+        gather( gre_type, percentile, -student_id ) %>%
+        mutate( gre_type_standard = str_sub( gre_type, 1,-3)) %>%
+        group_by( student_id, gre_type_standard) %>%
+        summarise( m.GRE = max(percentile, na.rm = T)) %>%
+        spread( gre_type_standard, m.GRE )
+        
+
+### Applicant Level Data without Repetion
+
+The fields in these categories should each appear once per applicant. There should be no duplicated columns.
+
+webadmitr
+---------
+
+=======
+
+![](https://github.com/jstrin/webadmitr/images/em_1.JPG, "Screenshot of the Export Manager.")
+
+### Export Manager
+
+Useage
+------
+
+### Designation/Application Level Data
 
 ### Applicant Level Data
 
 ### Combined Application and Applicant Level Data
+
+### Future Development
+
+> > > > > > > d2b1da66b7ee86c21c1407bc5dc060fcf6597ad0
