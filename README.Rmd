@@ -159,8 +159,6 @@ The fields in these categories should each appear once per applicant. There shou
 
 
 
-
-
 ### Export Manager
 
 
@@ -178,4 +176,3 @@ The fields in these categories should each appear once per applicant. There shou
 
 
 ### Future Development
-
