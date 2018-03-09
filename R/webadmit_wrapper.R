@@ -6,10 +6,14 @@
 #'
 #' @param dfWebadmit a dataframe exported from WebAdMIT
 #' @param IDvar the name of primary identifier variable
-#' @return a dataframe with one row per application (designation). Note, all variables will be returned as character type.
+#' @return a dataframe with one row per application (designation). Note, all
+#' variables will be returned as character type.
 
 
 webadmit_wrapper <- function(dfWebadmit, IDvar){
+
+  # Extract all column names, identify variables with more than one column
+  # identify designation vs applicant level variables
 
   dfNames <- data.frame( l.Names = names( dfWebadmit )) %>%
     mutate( l.Names = as.character( l.Names ),

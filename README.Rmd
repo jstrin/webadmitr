@@ -1,0 +1,49 @@
+---
+title: "webadmitr"
+author: John Stringer
+date: March 9, 2018
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+
+WebAdMIT is  admissions management software available from [Liaison International](https://www.liaisonedu.com/admission-management-system/). The tool is designed to help academic programs and admissions offices to process applications through admissions lifecycle. While there are a number of learning modules provided by Liaison (available [here](http://elearning.easygenerator.com/2567be59-4299-474d-98ea-6cd71551cf76/#login) ), what to do with the data once exported is not part of the training. I created this document and accompanying R package to help users understand and process the data.
+
+*Notes: *
+ - Some of what is covered here will be redundant from the Liaison training, however, it is necesary to include it to provide context for the rest of the documentaiton. 
+ - This doucmentation and code was developed at Boston University around BU's implementation of [UniCAS<sup>TM</sup> ](https://www.liaisonedu.com/centralized-application-service/). Some, if not all, of the code and use cases may not be directly applicable to your implementation of WebAdMIT. 
+ - The R package, `webadmitr` is provided with no garuntee or warrenty. 
+
+
+
+### WebAdMIT
+
+
+
+![](https://github.com/jstrin/webadmitr/images/em_1.JPG, "Screenshot of the Export Manager.")
+
+
+### Export Manager
+
+
+
+## Useage
+
+### Designation/Application Level Data
+
+
+
+### Applicant Level Data
+
+
+### Combined Application and Applicant Level Data
+
+
+### Future Development
